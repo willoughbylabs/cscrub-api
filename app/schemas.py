@@ -1,4 +1,3 @@
-from re import S
 from pydantic import BaseModel
 
 
@@ -13,12 +12,27 @@ class CreateMeeting(MeetingBase):
     pass
 
 
+class Meeting(MeetingBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
 class MemberBase(BaseModel):
     name: str
 
 
 class CreateMember(MemberBase):
     pass
+
+
+class Member(MemberBase):
+    id: int
+    msg: str | None = None
+
+    class Config:
+        orm_mode = True
 
 
 class LegislationBase(BaseModel):
@@ -34,6 +48,13 @@ class CreateLegislation(LegislationBase):
     pass
 
 
+class Legislation(LegislationBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
 class VoteBase(BaseModel):
     record_num: str
     name: str
@@ -42,3 +63,10 @@ class VoteBase(BaseModel):
 
 class CreateVote(VoteBase):
     pass
+
+
+class Vote(VoteBase):
+    id: int
+
+    class Config:
+        orm_mode = True
