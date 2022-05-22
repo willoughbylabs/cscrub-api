@@ -23,3 +23,8 @@ def fetch_rss_entries(url, type):
     if type == "meetings":
         document = feedparser.parse(url)
         return document.entries
+    if type == "legislation":
+        document = feedparser.parse(url)
+        feed_title = {"feed_title": document.feed.title}
+        document.entries.insert(0, feed_title)
+        return document.entries

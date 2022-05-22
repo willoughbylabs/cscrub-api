@@ -1,8 +1,9 @@
-from crud import meetings, members
+from crud import meetings, members, legislation
 from database import engine, SessionLocal, reset_table
 from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
 import models
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -51,3 +52,15 @@ def post_members_to_db(db: Session = Depends(get_db)):
     db.add_all(member_records)
     db.commit()
     return {"msg": "City Council members added to database."}
+
+
+@app.post("/legislation/")
+def post_legislation_to_db(db: Session = Depends(get_db)):
+
+    legislation_entries = legislation.fetch_legislation()
+    legislation_records = legislation.create_records(legislation_entries)
+    db.query(models.Legislation).delete()
+    reset_table("legislation")
+    db.add_all(legislation_records)
+    db.commit()
+    return {"msg": "City Council legislation added to database."}
