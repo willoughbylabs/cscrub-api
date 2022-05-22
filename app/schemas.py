@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-
+# MEETINGS
 class MeetingBase(BaseModel):
     type: str
     date: str
@@ -19,6 +19,7 @@ class Meeting(MeetingBase):
         orm_mode = True
 
 
+# MEMBERS
 class MemberBase(BaseModel):
     name: str
 
@@ -35,6 +36,7 @@ class Member(MemberBase):
         orm_mode = True
 
 
+# LEGISLATION
 class LegislationBase(BaseModel):
     record_num: str
     type: str
@@ -55,6 +57,7 @@ class Legislation(LegislationBase):
         orm_mode = True
 
 
+# VOTE
 class VoteBase(BaseModel):
     record_num: str
     name: str
