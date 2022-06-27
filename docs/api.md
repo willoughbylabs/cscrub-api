@@ -6,7 +6,7 @@ Please note: This project is currently being built.
 
 ### Meetings
 GET`/api/meetings` </br>
-GET `/api/meetings?year=2021`
+GET `/api/meetings/{year}`
 ```
 meetings: [
     {
