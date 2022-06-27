@@ -1,36 +1,53 @@
+from . import meetings
+from sqlalchemy.orm import Session
 import config
 import re
 import models, schemas
 import webdriver
 
 
-def fetch_legislation():
+def fetch_legislation(db: Session):
     """Fetch legislation from City Clerk RSS feed."""
 
     if config.set_legislation_links_list:
         links = config.links_list
+    else:
+        links = meetings.get_meeting_links(db)
 
     legislation_entries = []
     driver = webdriver.start_webdriver()
 
     for index, link in enumerate(links):
-        driver.get(link)
-        rss_btn = driver.find_element_by_xpath("//*[@id='ctl00_ButtonRSS']")
-        rss_btn.click()
-        driver.switch_to.window(driver.window_handles[-1])
-        url = driver.current_url
-        entries = webdriver.fetch_rss_entries(url, "legislation")
-        if entries[1].title == "No records":
+        try:
+            driver.get(link)
+            rss_btn = driver.find_element_by_xpath("//*[@id='ctl00_ButtonRSS']")
+        except Exception as e:
             print(
-                f"No legislation entries found for this meeting: {link}. Skipping to next meeting..."
+                f"Error occured. Unable to fetch legislation from City Clerk RSS feed.\nLink at index {index} may be incorrect:{link}\nSkipping link...",
+                e,
             )
+            continue
+        try:
+            rss_btn.click()
+            driver.switch_to.window(driver.window_handles[-1])
+            url = driver.current_url
+            entries = webdriver.fetch_rss_entries(url, "legislation")
+            if entries[1].title == "No records":
+                print(
+                    f"No legislation entries found for this meeting: {link}. Skipping to next meeting..."
+                )
+                driver.close()
+                driver.switch_to.window(driver.window_handles[-1])
+                continue
             driver.close()
             driver.switch_to.window(driver.window_handles[-1])
+            legislation_entries.append(entries)
+        except Exception as e:
+            print(
+                "Error occurred. Unable to parse legislation entries from City Clerk RSS feed.",
+                e,
+            )
             continue
-        driver.close()
-        driver.switch_to.window(driver.window_handles[-1])
-        legislation_entries.append(entries)
-
     return legislation_entries
 
 

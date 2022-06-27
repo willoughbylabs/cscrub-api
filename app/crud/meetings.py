@@ -42,7 +42,7 @@ def create_meeting(meeting: schemas.CreateMeeting):
 
 
 def create_records(entries):
-    """Creates a list of new Meeting row objects for inserting to the database."""
+    """Create a list of new Meeting row objects for inserting to the database."""
 
     meetings = []
     for entry in entries:
@@ -52,4 +52,13 @@ def create_records(entries):
 
 
 def get_all_meetings(db: Session):
-    return db.query(models.Meeting).all()
+    meetings = db.query(models.Meeting).all()
+    return meetings
+
+
+def get_meeting_links(db: Session):
+    links_list = []
+    links = db.query(models.Meeting.link).all()
+    for link in links:
+        links_list.append(link[0])
+    return links_list

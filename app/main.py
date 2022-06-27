@@ -11,7 +11,7 @@ app = FastAPI()
 
 
 def get_db():
-    """Start a new connection to the PostgreSQL database, and then close the connection when no longer in use."""
+    """Start a new connection to the PostgreSQL database, and close the connection when no longer in use."""
 
     db = SessionLocal()
     try:
@@ -26,6 +26,13 @@ def get_meetings(db: Session = Depends(get_db)):
 
     meetings_from_db = meetings.get_all_meetings(db)
     return meetings_from_db
+
+
+@app.get("/meetings/links")
+def get_meeting_links(db: Session = Depends(get_db)):
+    """Fetch the links for each meeting. Used for extracting legislation from each meeting."""
+
+    meetings.get_meeting_links(db)
 
 
 @app.post("/meetings/")
@@ -57,7 +64,7 @@ def post_members_to_db(db: Session = Depends(get_db)):
 @app.post("/legislation/")
 def post_legislation_to_db(db: Session = Depends(get_db)):
 
-    legislation_entries = legislation.fetch_legislation()
+    legislation_entries = legislation.fetch_legislation(db)
     legislation_records = legislation.create_records(legislation_entries)
     db.query(models.Legislation).delete()
     reset_table("legislation")

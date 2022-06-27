@@ -1,4 +1,4 @@
-set_legislation_links_list = True
+set_legislation_links_list = False
 
 links_list = [
     "https://chicago.legistar.com/MeetingDetail.aspx?ID=505011&GUID=AC673713-8FC1-47CF-A160-D31BC131DF03",
