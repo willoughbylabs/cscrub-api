@@ -43,7 +43,7 @@ def fetch_members():
 
 
 def create_records(entries):
-    """ "Creates a list of new Member row objects for inserting to the database."""
+    """Create a list of new Member row objects for inserting to the database."""
 
     members = []
     for entry in entries:
